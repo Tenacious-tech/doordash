@@ -39,6 +39,7 @@ export const webhook= async(req, res) => {
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
               { status: 'DASHER_PICKED_UP'},
+              {pickup_time_actual:req.body.pickup_time_actual},
               { new: true }
             );
             break;
@@ -57,6 +58,7 @@ export const webhook= async(req, res) => {
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
               { status: 'DASHER_DROPPED_OFF'},
+              {dropoff_time_actual:req.body.dropoff_time_actual},
               { new: true }
             );
             break;
