@@ -1,0 +1,30 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Delivery {
+  external_delivery_id   String   @unique
+  pickup_address         String?
+  pickup_business_name   String?
+  pickup_phone_number    String?
+  pickup_instructions    String?
+  dropoff_address        String?
+  dropoff_business_name  String?
+  dropoff_phone_number   String?
+  dropoff_instructions   String?
+  order_value            Int?
+  status                 String?
+  fee                    Int?
+  pickup_time_estimated  DateTime?
+  dropoff_time_eatimated DateTime?
+  pickup_time_actual     DateTime?
+  dropoff_time_actual    DateTime?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
