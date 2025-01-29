@@ -11,7 +11,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=CREATED, dasher_id=${req.body.dasher_id}, dasher_name=${req.body.dasher_name} WHERE external_delivery_id=${id}`;
              await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DELIVERY_CREATED', tip: reqBody.tip },
+              { status: 'DELIVERY_CREATED' },
               { new: true }
             );
             break;
@@ -20,7 +20,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=DASHER_CONFIRMED WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DASHER_CONFIRMED', tip: reqBody.tip },
+              { status: 'DASHER_CONFIRMED' },
               { new: true }
             );
             break;
@@ -29,7 +29,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=DASHER_ARRIVED_AT_PICKUP WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DASHER_CONFIRMED_PICKUP_ARRIVAL', tip: reqBody.tip },
+              { status: 'DASHER_CONFIRMED_PICKUP_ARRIVAL' },
               { new: true }
             );
             break;
@@ -38,7 +38,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=DELIVERY_PICKED_UP, pickup_time=${req.body.pickup_time_actual}  WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DASHER_PICKED_UP', tip: reqBody.tip },
+              { status: 'DASHER_PICKED_UP'},
               { new: true }
             );
             break;
@@ -47,7 +47,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=DASHER_ARRIVED_AT_DROPOFF WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DASHER_CONFIRMED_DROPOFF_ARRIVAL', tip: reqBody.tip },
+              { status: 'DASHER_CONFIRMED_DROPOFF_ARRIVAL' },
               { new: true }
             );
             break;
@@ -56,7 +56,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=DELIVERED, dropoff_time=${req.body.dropoff_time_actual} WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DASHER_DROPPED_OFF', tip: reqBody.tip },
+              { status: 'DASHER_DROPPED_OFF'},
               { new: true }
             );
             break;
@@ -65,7 +65,7 @@ export const webhook= async(req, res) => {
             // insertQuery= `UPDATE delivery SET status=CANCELLED WHERE external_delivery_id=${id}`;
             await Delivery.findOneAndUpdate(
               { external_delivery_id: id },
-              { status: 'DELIVERY_CANCELLED', tip: reqBody.tip },
+              { status: 'DELIVERY_CANCELLED'},
               { new: true }
             );
             break;
