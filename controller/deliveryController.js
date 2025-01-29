@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
+import Delivery from '../models/delivery.js';
+
 dotenv.config();
 
 
-const prisma = new PrismaClient();
 
 const data = {
   aud: 'doordash',
@@ -53,23 +53,24 @@ export const createDelivery= async(req,res)=>{
       // console.log("krdiya data add");
       // await DB.end();
 
-      const delivery = await prisma.delivery.create({
-        data: {
-          external_delivery_id: reqBody.external_delivery_id,
-          pickup_address: reqBody.pickup_address,
-          pickup_business_name: reqBody.pickup_business_name,
-          pickup_phone_number: reqBody.pickup_phone_number,
-          pickup_instructions: reqBody.pickup_instructions,
-          dropoff_address: reqBody.dropoff_address,
-          dropoff_business_name: reqBody.dropoff_business_name,
-          dropoff_phone_number: reqBody.dropoff_phone_number,
-          dropoff_instructions: reqBody.dropoff_instructions,
-          order_value: reqBody.order_value,
-          status: response.data.delivery_status,
-        },
+      const delivery = new Delivery({
+        external_delivery_id: reqBody.external_delivery_id,
+        pickup_address: reqBody.pickup_address,
+        pickup_business_name: reqBody.pickup_business_name,
+        pickup_phone_number: reqBody.pickup_phone_number,
+        pickup_instructions: reqBody.pickup_instructions,
+        dropoff_address: reqBody.dropoff_address,
+        dropoff_business_name: reqBody.dropoff_business_name,
+        dropoff_phone_number: reqBody.dropoff_phone_number,
+        dropoff_instructions: reqBody.dropoff_instructions,
+        order_value: reqBody.order_value,
+        status: response.data.delivery_status,
       });
-    
+  
+      // Save the delivery to the database
+      await delivery.save();
 
+     
     return res.json({data : response.data});
 }
 
@@ -125,21 +126,22 @@ export const createQuote = async(req,res)=>{
   //     console.log("krdiya data add");
   //     await DB.end();
 
-  const quote = await prisma.delivery.create({
-    data: {
-      external_delivery_id: reqBody.external_delivery_id,
-      pickup_address: reqBody.pickup_address,
-      pickup_business_name: reqBody.pickup_business_name,
-      pickup_phone_number: reqBody.pickup_phone_number,
-      pickup_instructions: reqBody.pickup_instructions,
-      dropoff_address: reqBody.dropoff_address,
-      dropoff_business_name: reqBody.dropoff_business_name,
-      dropoff_phone_number: reqBody.dropoff_phone_number,
-      dropoff_instructions: reqBody.dropoff_instructions,
-      order_value: reqBody.order_value,
-      status: response.data.delivery_status,
-    },
+  const delivery = new Delivery({
+    external_delivery_id: reqBody.external_delivery_id,
+    pickup_address: reqBody.pickup_address,
+    pickup_business_name: reqBody.pickup_business_name,
+    pickup_phone_number: reqBody.pickup_phone_number,
+    pickup_instructions: reqBody.pickup_instructions,
+    dropoff_address: reqBody.dropoff_address,
+    dropoff_business_name: reqBody.dropoff_business_name,
+    dropoff_phone_number: reqBody.dropoff_phone_number,
+    dropoff_instructions: reqBody.dropoff_instructions,
+    order_value: reqBody.order_value,
+    status: response.data.delivery_status,
   });
+
+  // Save the delivery to the database
+  await delivery.save();
 
   return res.json({data : response.data});
 }
@@ -164,11 +166,11 @@ export const acceptQuote = async(req,res)=>{
       // await DB.execute(insertQuery);
       // console.log("krdiya data add");
       // await DB.end();
-
-      await prisma.delivery.update({
-        where: { external_delivery_id: id },
-        data: { status: 'created' },
-      });
+      const delivery = await Delivery.findOneAndUpdate(
+        { external_delivery_id: id },
+        { status: 'Accepted', tip: reqBody.tip },
+        { new: true }
+      );
     
   return res.json({data: response.data});
 }
@@ -191,10 +193,14 @@ export const cancelDelivery = async (req,res)=>{
     //   await DB.execute(insertQuery);
     //   console.log("krdiya data add");
     //   await DB.end();
-    await prisma.delivery.update({
-      where: { external_delivery_id: id },
-      data: { status: 'cancelled' },
-    });
+
+    const delivery = await Delivery.findOneAndUpdate(
+      { external_delivery_id: id },
+      { status: 'Cancelled' },
+      { new: true }
+    );
+
+  
     return res.json({data : response.data});
   }catch(err){
     return res.json(err);
