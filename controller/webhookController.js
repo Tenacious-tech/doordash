@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import Delivery from "../models/delivery.js";
 
 
 export const webhook= async(req, res) => {
@@ -10,58 +9,65 @@ export const webhook= async(req, res) => {
     switch (eventType) {
         case 'DELIVERY_CREATED':
             // insertQuery= `UPDATE delivery SET status=CREATED, dasher_id=${req.body.dasher_id}, dasher_name=${req.body.dasher_name} WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DELIVERY_CREATED' },
-              });
+             await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DELIVERY_CREATED', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DASHER_CONFIRMED':
             // insertQuery= `UPDATE delivery SET status=DASHER_CONFIRMED WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DASHER_CONFIRMED' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DASHER_CONFIRMED', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DASHER_CONFIRMED_PICKUP_ARRIVAL':
             // insertQuery= `UPDATE delivery SET status=DASHER_ARRIVED_AT_PICKUP WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DASHER_CONFIRMED_PICKUP_ARRIVAL' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DASHER_CONFIRMED_PICKUP_ARRIVAL', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DASHER_PICKED_UP':
             // insertQuery= `UPDATE delivery SET status=DELIVERY_PICKED_UP, pickup_time=${req.body.pickup_time_actual}  WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DASHER_PICKED_UP' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DASHER_PICKED_UP', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DASHER_CONFIRMED_DROPOFF_ARRIVAL':
             // insertQuery= `UPDATE delivery SET status=DASHER_ARRIVED_AT_DROPOFF WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DASHER_CONFIRMED_DROPOFF_ARRIVAL' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DASHER_CONFIRMED_DROPOFF_ARRIVAL', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DASHER_DROPPED_OFF':
             // insertQuery= `UPDATE delivery SET status=DELIVERED, dropoff_time=${req.body.dropoff_time_actual} WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DASHER_DROPPED_OFF' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DASHER_DROPPED_OFF', tip: reqBody.tip },
+              { new: true }
+            );
             break;
 
         case 'DELIVERY_CANCELLED':
             // insertQuery= `UPDATE delivery SET status=CANCELLED WHERE external_delivery_id=${id}`;
-            await prisma.delivery.update({
-                where: { external_delivery_id: id },
-                data: { status: 'DELIVERY_CANCELLED' },
-              });
+            await Delivery.findOneAndUpdate(
+              { external_delivery_id: id },
+              { status: 'DELIVERY_CANCELLED', tip: reqBody.tip },
+              { new: true }
+            );
             break;
     }
 
