@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { connectDB } from '../config/db.js';
+import { PrismaClient } from '@prisma/client';
 dotenv.config();
+
+
+const prisma = new PrismaClient();
 
 const data = {
   aud: 'doordash',
@@ -43,12 +46,29 @@ export const createDelivery= async(req,res)=>{
           'Content-Type': 'application/json',
         },
       });
-      const insertQuery=`INSERT INTO delivery (external_delivery_id, pickup_address, pickup_business_name, pickup_phone_number, pickup_instructions,dropoff_address, dropoff_business_name,dropoff_phone_number,dropoff_instructions,order_value,status) VALUES (?, ?, ?,?,?,?,?,?,?,?,?)`;
-      const values=[reqBody.external_delivery_id,reqBody.pickup_address,reqBody.pickup_business_name,reqBody.pickup_phone_number,reqBody.pickup_instructions,reqBody.dropoff_address,reqBody.dropoff_business_name,reqBody.dropoff_phone_number,reqBody.dropoff_instructions,reqBody.order_value,response.data.delivery_status];
-      const DB= await connectDB();
-      await DB.execute(insertQuery,values);
-      console.log("krdiya data add");
-      await DB.end();
+      // const insertQuery=`INSERT INTO delivery (external_delivery_id, pickup_address, pickup_business_name, pickup_phone_number, pickup_instructions,dropoff_address, dropoff_business_name,dropoff_phone_number,dropoff_instructions,order_value,status) VALUES (?, ?, ?,?,?,?,?,?,?,?,?)`;
+      // const values=[reqBody.external_delivery_id,reqBody.pickup_address,reqBody.pickup_business_name,reqBody.pickup_phone_number,reqBody.pickup_instructions,reqBody.dropoff_address,reqBody.dropoff_business_name,reqBody.dropoff_phone_number,reqBody.dropoff_instructions,reqBody.order_value,response.data.delivery_status];
+      // const DB= await connectDB();
+      // await DB.execute(insertQuery,values);
+      // console.log("krdiya data add");
+      // await DB.end();
+
+      const delivery = await prisma.delivery.create({
+        data: {
+          external_delivery_id: reqBody.external_delivery_id,
+          pickup_address: reqBody.pickup_address,
+          pickup_business_name: reqBody.pickup_business_name,
+          pickup_phone_number: reqBody.pickup_phone_number,
+          pickup_instructions: reqBody.pickup_instructions,
+          dropoff_address: reqBody.dropoff_address,
+          dropoff_business_name: reqBody.dropoff_business_name,
+          dropoff_phone_number: reqBody.dropoff_phone_number,
+          dropoff_instructions: reqBody.dropoff_instructions,
+          order_value: reqBody.order_value,
+          status: response.data.delivery_status,
+        },
+      });
+    
 
     return res.json({data : response.data});
 }
@@ -97,13 +117,30 @@ export const createQuote = async(req,res)=>{
       'Content-Type': 'application/json',
     },
   });
-  const insertQuery=`INSERT INTO delivery (external_delivery_id, pickup_address, pickup_business_name, pickup_phone_number, pickup_instructions,dropoff_address, dropoff_business_name,dropoff_phone_number,dropoff_instructions,order_value,status) VALUES (?, ?, ?,?,?,?,?,?,?,?,?)`;
-  const values=[reqBody.external_delivery_id,reqBody.pickup_address,reqBody.pickup_business_name,reqBody.pickup_phone_number,reqBody.pickup_instructions,reqBody.dropoff_address,reqBody.dropoff_business_name,reqBody.dropoff_phone_number,reqBody.dropoff_instructions,reqBody.order_value,response.data.delivery_status];
+  // const insertQuery=`INSERT INTO delivery (external_delivery_id, pickup_address, pickup_business_name, pickup_phone_number, pickup_instructions,dropoff_address, dropoff_business_name,dropoff_phone_number,dropoff_instructions,order_value,status) VALUES (?, ?, ?,?,?,?,?,?,?,?,?)`;
+  // const values=[reqBody.external_delivery_id,reqBody.pickup_address,reqBody.pickup_business_name,reqBody.pickup_phone_number,reqBody.pickup_instructions,reqBody.dropoff_address,reqBody.dropoff_business_name,reqBody.dropoff_phone_number,reqBody.dropoff_instructions,reqBody.order_value,response.data.delivery_status];
   
-      const DB= await connectDB();
-      await DB.execute(insertQuery,values);
-      console.log("krdiya data add");
-      await DB.end();
+  //     const DB= await connectDB();
+  //     await DB.execute(insertQuery,values);
+  //     console.log("krdiya data add");
+  //     await DB.end();
+
+  const quote = await prisma.delivery.create({
+    data: {
+      external_delivery_id: reqBody.external_delivery_id,
+      pickup_address: reqBody.pickup_address,
+      pickup_business_name: reqBody.pickup_business_name,
+      pickup_phone_number: reqBody.pickup_phone_number,
+      pickup_instructions: reqBody.pickup_instructions,
+      dropoff_address: reqBody.dropoff_address,
+      dropoff_business_name: reqBody.dropoff_business_name,
+      dropoff_phone_number: reqBody.dropoff_phone_number,
+      dropoff_instructions: reqBody.dropoff_instructions,
+      order_value: reqBody.order_value,
+      status: response.data.delivery_status,
+    },
+  });
+
   return res.json({data : response.data});
 }
 
@@ -122,11 +159,17 @@ export const acceptQuote = async(req,res)=>{
       'Content-Type': 'application/json',
     },
   });
-      const insertQuery= `UPDATE delivery SET status=created WHERE external_delivery_id=${id}`;
-      const DB= await connectDB();
-      await DB.execute(insertQuery);
-      console.log("krdiya data add");
-      await DB.end();
+      // const insertQuery= `UPDATE delivery SET status=created WHERE external_delivery_id=${id}`;
+      // const DB= await connectDB();
+      // await DB.execute(insertQuery);
+      // console.log("krdiya data add");
+      // await DB.end();
+
+      await prisma.delivery.update({
+        where: { external_delivery_id: id },
+        data: { status: 'created' },
+      });
+    
   return res.json({data: response.data});
 }
 
@@ -143,11 +186,15 @@ export const cancelDelivery = async (req,res)=>{
         'Content-Type': 'application/json',
       },
     });
-    const insertQuery= `UPDATE delivery SET status=cancelled WHERE external_delivery_id=${id}`;
-      const DB= await connectDB();
-      await DB.execute(insertQuery);
-      console.log("krdiya data add");
-      await DB.end();
+    // const insertQuery= `UPDATE delivery SET status=cancelled WHERE external_delivery_id=${id}`;
+    //   const DB= await connectDB();
+    //   await DB.execute(insertQuery);
+    //   console.log("krdiya data add");
+    //   await DB.end();
+    await prisma.delivery.update({
+      where: { external_delivery_id: id },
+      data: { status: 'cancelled' },
+    });
     return res.json({data : response.data});
   }catch(err){
     return res.json(err);
