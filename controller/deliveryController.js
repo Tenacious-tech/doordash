@@ -7,7 +7,7 @@ dotenv.config();
 
 
 
-const data = {
+let data = {
   aud: 'doordash',
   iss: process.env.DEVELOPER_ID,
   kid: process.env.KEY_ID,
@@ -15,13 +15,9 @@ const data = {
   iat: Math.floor(Date.now() / 1000),
 }
 
-const headers = { algorithm: 'HS256', header: { 'dd-ver': 'DD-JWT-V1' } }
+let headers = { algorithm: 'HS256', header: { 'dd-ver': 'DD-JWT-V1' } }
 
-const token = jwt.sign(
-  data,
-  Buffer.from(process.env.SIGNING_SECRET, 'base64'),
-  headers,
-)
+
 
 // create delivery
 export const createDelivery= async(req,res)=>{
@@ -39,7 +35,11 @@ export const createDelivery= async(req,res)=>{
         dropoff_instructions: reqBody.dropoff_instructions,
         order_value: reqBody.order_value,
       });
-
+  let token = jwt.sign(
+  data,
+  Buffer.from(process.env.SIGNING_SECRET, 'base64'),
+  headers,
+)
      const response= await axios.post('https://openapi.doordash.com/drive/v2/deliveries', body, {
         headers: {
           Authorization: 'Bearer ' + token,
